@@ -70,13 +70,64 @@
     @keyframes floatIcon{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
     @keyframes shimmerLine{0%{background-position:-200% center;}100%{background-position:200% center;}}
     #feed-view{background:var(--bg);}
-    .arena-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:8;background:rgba(7,3,15,.95);backdrop-filter:blur(16px);}
+    .arena-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:8;background:rgba(7,3,15,.96);backdrop-filter:blur(20px);}
+    .arena-header-left{display:flex;align-items:center;gap:10px;}
     .arena-title{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--text);text-shadow:0 0 20px var(--glow);}
     .arena-title span{color:var(--purple);}
+    .live-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4ade80;}
+    .live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:livePulse 2s ease-in-out infinite;flex-shrink:0;}
+    @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.6);}50%{opacity:.7;box-shadow:0 0 0 5px rgba(34,197,94,0);}}
     .arena-compose-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:linear-gradient(135deg,var(--purple-dim),var(--purple));border:none;border-radius:20px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 14px var(--glow);transition:box-shadow .2s;}
     .arena-compose-btn:hover{box-shadow:0 6px 22px rgba(155,48,255,.55);}
     .arena-compose-btn svg{width:13px;height:13px;stroke:#fff;stroke-width:2.5;fill:none;stroke-linecap:round;}
-    .arena-feed{padding:12px 0 80px;}
+
+    /* Live ticker strip */
+    .live-strip{overflow:hidden;border-bottom:1px solid var(--border);background:var(--surface);height:32px;display:flex;align-items:center;position:relative;}
+    .live-strip::before,.live-strip::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none;}
+    .live-strip::before{left:0;background:linear-gradient(90deg,var(--surface),transparent);}
+    .live-strip::after{right:0;background:linear-gradient(-90deg,var(--surface),transparent);}
+    .live-strip-track{display:flex;align-items:center;width:max-content;animation:tickerRun 38s linear infinite;}
+    @keyframes tickerRun{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+    .live-tick-item{display:inline-flex;align-items:center;gap:5px;padding:0 18px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.3px;white-space:nowrap;}
+    .live-tick-icon{font-size:11px;}
+    .live-tick-sep{color:var(--border2);margin:0 2px;}
+
+    /* Feed tabs */
+    .arena-feed-tabs{display:flex;padding:0 14px;gap:0;border-bottom:1px solid var(--border);background:var(--bg);}
+    .arena-ftab{padding:10px 18px 9px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;position:relative;transition:color .2s;background:none;border:none;}
+    .arena-ftab::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:var(--purple);border-radius:2px 2px 0 0;transform:scaleX(0);transition:transform .22s cubic-bezier(.4,0,.2,1);}
+    .arena-ftab.active{color:var(--text);}
+    .arena-ftab.active::after{transform:scaleX(1);}
+
+    /* Pending pill */
+    .pending-pill{display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(135deg,var(--purple-dim),var(--purple));color:#fff;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;max-height:0;overflow:hidden;opacity:0;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .3s,padding .3s;border-bottom:1px solid transparent;}
+    .pending-pill.visible{max-height:40px;opacity:1;padding:9px 20px;border-bottom-color:rgba(155,48,255,.4);}
+    .pending-pill svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+    .arena-feed{padding:10px 0 90px;}
+
+    /* Card enter / exit animations */
+    @keyframes cardSlideIn{from{opacity:0;transform:translateY(-22px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+    .card-new{animation:cardSlideIn .38s cubic-bezier(.34,1.15,.64,1) forwards;}
+    @keyframes cardFadeOut{to{opacity:0;transform:scale(.94);max-height:0;margin-bottom:0;padding:0;border:none;}}
+    .card-removing{animation:cardFadeOut .28s ease forwards;overflow:hidden;pointer-events:none;}
+
+    /* Delete button on own cards */
+    .acard-delete{color:var(--muted)!important;margin-left:auto;}
+    .acard-delete:hover{color:var(--danger)!important;background:rgba(255,77,109,.08)!important;}
+    .acard-delete svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+
+    /* Compose: review fields */
+    .compose-review-fields{padding:0 16px 12px;border-bottom:1px solid var(--border);}
+    .compose-review-title-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'Exo 2',sans-serif;outline:none;margin-bottom:10px;transition:border-color .2s;}
+    .compose-review-title-input:focus{border-color:var(--purple);}
+    .compose-review-title-input::placeholder{color:var(--muted);}
+    .compose-star-row{display:flex;align-items:center;gap:10px;}
+    .compose-star-label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);}
+    .compose-star-picker{display:flex;gap:4px;}
+    .compose-star{font-size:22px;cursor:pointer;transition:transform .1s,color .1s;color:var(--border2);line-height:1;}
+    .compose-star:hover{transform:scale(1.2);}
+    .compose-star.lit{color:var(--gold);}
 
     /* Activity card */
     .acard{margin:0 14px 12px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;transition:border-color .2s;}
@@ -172,19 +223,22 @@
     .movie-tile{background:var(--bg);position:relative;transition:background .15s;}
     .movie-tile:active{background:var(--surface);}
     .tile-poster{width:100%;aspect-ratio:2/3;background:var(--surface2);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-    .tile-poster-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;opacity:.05;pointer-events:none;user-select:none;font-family:sans-serif;}
-    .tile-genre-accent{position:absolute;top:0;left:0;right:0;height:3px;}
+    .tile-poster-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;opacity:.05;pointer-events:none;user-select:none;font-family:sans-serif;transition:opacity .4s;}
+    .tile-real-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;z-index:1;opacity:0;transition:opacity .45s ease;}
+    .tile-real-poster.loaded{opacity:1;}
+    .tile-poster.has-poster .tile-poster-bg{opacity:0;}
+    .tile-genre-accent{position:absolute;top:0;left:0;right:0;height:3px;z-index:2;}
     .tga-action{background:linear-gradient(90deg,var(--action),transparent);}
     .tga-scifi{background:linear-gradient(90deg,var(--scifi),transparent);}
     .tga-horror{background:linear-gradient(90deg,var(--horror),transparent);}
     .tga-comedy{background:linear-gradient(90deg,var(--comedy),transparent);}
-    .tile-poster-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,3,15,.88) 0%,transparent 55%);}
-    .tile-genre-pill{position:absolute;top:9px;left:9px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid;backdrop-filter:blur(4px);}
+    .tile-poster-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,3,15,.88) 0%,transparent 55%);z-index:2;}
+    .tile-genre-pill{position:absolute;top:9px;left:9px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid;backdrop-filter:blur(4px);z-index:3;}
     .tg-action{background:rgba(61,139,255,.18);color:var(--action);border-color:rgba(61,139,255,.4);}
     .tg-scifi{background:rgba(191,111,255,.18);color:var(--scifi);border-color:rgba(191,111,255,.4);}
     .tg-horror{background:rgba(255,59,92,.18);color:var(--horror);border-color:rgba(255,59,92,.4);}
     .tg-comedy{background:rgba(255,168,48,.18);color:var(--comedy);border-color:rgba(255,168,48,.4);}
-    .tile-logged-badge{position:absolute;bottom:10px;right:10px;width:22px;height:22px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;box-shadow:0 0 8px var(--glow);}
+    .tile-logged-badge{position:absolute;bottom:10px;right:10px;width:22px;height:22px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;box-shadow:0 0 8px var(--glow);z-index:3;}
     .tile-info{padding:10px 12px 14px;}
     .tile-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:6px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
     .tile-meta-row{display:flex;align-items:center;justify-content:space-between;gap:4px;}
@@ -370,7 +424,7 @@
     .log-sheet-remove:hover{background:rgba(255,77,109,.08);}
 
     /* STATUS PILL on tile */
-    .tile-status-pill{position:absolute;bottom:8px;left:8px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:5px;backdrop-filter:blur(4px);}
+    .tile-status-pill{position:absolute;bottom:8px;left:8px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:5px;backdrop-filter:blur(4px);z-index:3;}
     .sp-want{background:rgba(251,191,36,.15);color:var(--gold);border:1px solid rgba(251,191,36,.4);}
     .sp-watching{background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.35);}
     .sp-done{background:rgba(155,48,255,.15);color:var(--purple2);border:1px solid rgba(155,48,255,.4);}
@@ -428,12 +482,21 @@
   <!-- ARENA -->
   <div class="view active" id="feed-view">
     <div class="arena-header">
-      <div class="arena-title">The <span>Arena</span></div>
+      <div class="arena-header-left">
+        <div class="arena-title">The <span>Arena</span></div>
+        <div class="live-badge"><div class="live-dot"></div>Live</div>
+      </div>
       <button class="arena-compose-btn" onclick="openCompose()">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Drop a Take
       </button>
     </div>
+    <div class="live-strip"><div class="live-strip-track" id="live-strip-track"></div></div>
+    <div class="arena-feed-tabs">
+      <button class="arena-ftab active" data-tab="foryou" onclick="switchFeedTab('foryou')">For You</button>
+      <button class="arena-ftab" data-tab="trending" onclick="switchFeedTab('trending')">Trending</button>
+    </div>
+    <div class="pending-pill" id="pending-pill" onclick="flushPending()"></div>
     <div class="arena-feed" id="arena-feed"></div>
   </div>
 
@@ -445,9 +508,9 @@
         <input class="exp-search-input" type="text" id="exp-search" placeholder="Search titles, genres, years…" oninput="filterMovies()"/>
       </div>
       <div class="ctype-tabs">
-        <div class="ctype-tab active" id="ctype-movie" onclick="setContentType('movie',this)"><span class="ctype-tab-icon">🎬</span>Movies</div>
-        <div class="ctype-tab" id="ctype-show" onclick="setContentType('show',this)"><span class="ctype-tab-icon">📺</span>Shows</div>
-        <div class="ctype-tab" id="ctype-game" onclick="setContentType('game',this)"><span class="ctype-tab-icon">🎮</span>Games</div>
+        <div class="ctype-tab active" id="ctype-movie" onclick="setContentType('movie',this)">Movies</div>
+        <div class="ctype-tab" id="ctype-show" onclick="setContentType('show',this)">Shows</div>
+        <div class="ctype-tab" id="ctype-game" onclick="setContentType('game',this)">Games</div>
       </div>
       <div class="exp-genre-tabs">
         <div class="exp-gtab active" onclick="setGenreFilter('all',this)">All</div>
@@ -534,7 +597,7 @@
         <div class="profile-panel" id="panel-vault">
           <div class="vault-grid" id="watched-grid"></div>
           <div class="empty-vault" id="empty-watched">
-            <div class="empty-vault-icon">🎬</div>
+            <div class="empty-vault-icon" style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--border2);opacity:1">VAULT</div>
             <p>Your vault is empty.<br/>Head to Explore and start logging.</p>
           </div>
         </div>
@@ -564,7 +627,7 @@
         <!-- Critiques -->
         <div class="profile-panel" id="panel-critiques">
           <div class="critiques-body">
-            <div class="critiques-icon">✍️</div>
+            <div class="critiques-icon" style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;color:var(--purple2)">CRITIQUES</div>
             <span class="coming-pill">Coming Soon</span>
             <p>Rate, review &amp; critique movies you've watched. Your hot takes, your voice.</p>
           </div>
@@ -585,7 +648,7 @@
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <span>Explore</span>
     </button>
-    <button class="nav-btn" onclick="showToast('Posting feature coming soon')">
+    <button class="nav-btn" onclick="openCompose()">
       <div class="post-btn-ring"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
       <span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-family:'Rajdhani',sans-serif;margin-top:2px;">Post</span>
     </button>
@@ -645,17 +708,17 @@
   <div class="log-sheet-media" id="log-sheet-title-text">—</div>
   <div class="log-status-list">
     <button class="log-status-btn" id="lsb-want" onclick="selectLogStatus('want')">
-      <div class="lsb-icon">🔖</div>
+      <div class="lsb-icon" style="font-size:16px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--gold)">WL</div>
       <div class="lsb-info"><div class="lsb-label">Want to Watch</div><div class="lsb-desc">Save it to your watchlist</div></div>
       <div class="lsb-check"></div>
     </button>
     <button class="log-status-btn" id="lsb-watching" onclick="selectLogStatus('watching')">
-      <div class="lsb-icon">▶️</div>
+      <div class="lsb-icon" style="font-size:16px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--cyan)">▶</div>
       <div class="lsb-info"><div class="lsb-label">Watching</div><div class="lsb-desc">Currently in progress</div></div>
       <div class="lsb-check"></div>
     </button>
     <button class="log-status-btn" id="lsb-done" onclick="selectLogStatus('done')">
-      <div class="lsb-icon">✅</div>
+      <div class="lsb-icon" style="font-size:16px;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--purple2)">✓</div>
       <div class="lsb-info"><div class="lsb-label">Completed</div><div class="lsb-desc">Finished — add to your vault</div></div>
       <div class="lsb-check"></div>
     </button>
@@ -677,9 +740,22 @@
     <button class="compose-post-btn" onclick="submitPost()">Post</button>
   </div>
   <div class="compose-type-row">
-    <button class="compose-type-btn active" id="ctype-hottake" onclick="setPostType('Hot Take',this)">🔥 Hot Take</button>
-    <button class="compose-type-btn" id="ctype-rec" onclick="setPostType('Rec',this)">👍 Rec</button>
-    <button class="compose-type-btn" id="ctype-review" onclick="setPostType('Review',this)">⭐ Review</button>
+    <button class="compose-type-btn active" id="ctype-hottake" onclick="setPostType('Hot Take',this)">Hot Take</button>
+    <button class="compose-type-btn" id="ctype-rec" onclick="setPostType('Rec',this)">Rec</button>
+    <button class="compose-type-btn" id="ctype-review" onclick="setPostType('Review',this)">Review</button>
+  </div>
+  <div class="compose-review-fields" id="compose-review-fields" style="display:none">
+    <input type="text" id="compose-review-title" class="compose-review-title-input" placeholder="What are you reviewing?"/>
+    <div class="compose-star-row">
+      <span class="compose-star-label">Rating</span>
+      <div class="compose-star-picker" id="compose-star-picker">
+        <span class="compose-star lit" onclick="setComposeStar(1)">★</span>
+        <span class="compose-star lit" onclick="setComposeStar(2)">★</span>
+        <span class="compose-star lit" onclick="setComposeStar(3)">★</span>
+        <span class="compose-star lit" onclick="setComposeStar(4)">★</span>
+        <span class="compose-star lit" onclick="setComposeStar(5)">★</span>
+      </div>
+    </div>
   </div>
   <div class="compose-textarea-wrap">
     <textarea class="compose-textarea" id="compose-text" maxlength="280" placeholder="What's your take…" oninput="updateCharCount()"></textarea>
@@ -798,7 +874,11 @@ function launchApp(email){
   $('auth-screen').classList.add('hidden');$('app-screen').classList.remove('hidden');
   migrateWatched(email);
   refreshProfileUI(email);MOVIES=CONTENT[activeContentType];renderMovieGrid(MOVIES);
+  initLiveStrip();
   renderArena();switchView('feed');
+  LiveEngine.start();
+  // Fetch posters async — tiles update as images arrive
+  fetchAllPosters();
 }
 function refreshProfileUI(email){
   const user=getUsers().find(u=>u.email===email)||{};
@@ -844,7 +924,7 @@ function updateStats(email){
 }
 const VS_CLS={want:'vs-want',watching:'vs-watching',done:'vs-done'};
 const STATUS_SHORT={want:'Wishlist',watching:'Watching',done:'Done'};
-const CTYPE_ICON={movie:'🎬',show:'📺',game:'🎮'};
+const CTYPE_ICON={movie:'M',show:'S',game:'G'};
 function renderWatchedGrid(email){
   migrateWatched(email);
   const tracked=getAllTracked(email),grid=$('watched-grid'),empty=$('empty-watched');
@@ -852,7 +932,7 @@ function renderWatchedGrid(email){
   empty.style.display='none';
   grid.innerHTML=tracked.map(m=>`
     <div class="vault-item">
-      <div class="vault-placeholder">${CTYPE_ICON[m.ctype]||'🎬'}</div>
+      <div class="vault-placeholder" style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--border2)">${CTYPE_ICON[m.ctype]||'M'}</div>
       <div class="vault-genre-bar ${GD[m.genre]||''}"></div>
       <div class="vault-overlay"><div class="vault-title">${m.title}</div></div>
       <div class="vault-status ${VS_CLS[m.status]||''}">${STATUS_SHORT[m.status]||''}</div>
@@ -996,6 +1076,8 @@ function renderMovieGrid(movies){
       </div>`;
     grid.appendChild(tile);
   });
+  // Apply any already-fetched posters immediately
+  requestAnimationFrame(applyCachedPosters);
 }
 function filterMovies(){
   const q=$('exp-search').value.toLowerCase();
@@ -1082,7 +1164,8 @@ function switchView(view){
   $(view+'-view').classList.add('active');
   const nb=$('nav-'+view);if(nb)nb.classList.add('active');
   if(view==='profile'){updateStats(getSession());switchProfileTab(currentProfileTab);}
-  if(view==='feed'){renderArena();}
+  if(view==='feed'){renderArena();LiveEngine.start();}
+  else{LiveEngine.stop();}
 }
 /* ─── ARENA ─── */
 const DEMO_USERS=[
@@ -1119,110 +1202,11 @@ function timeAgo(ts){
   return Math.floor(s/86400)+'d ago';
 }
 
-function renderArena(){
-  const em=getSession(),feed=$('arena-feed');
-  if(!feed)return;
-  const userPosts=getPosts(em).map((p,i)=>{
-    const prof=getPD(em)||{};
-    const name=prof.name||'You';
-    return {...p,_user:{name,handle:em.split('@')[0],color:'var(--purple)',bg:'var(--surface2)',icon:name[0]?.toUpperCase()||'?'},_uid:'u'+i};
-  });
-  const tracked=getAllTracked(em);
-  const userLogs=tracked.map((t,i)=>({
-    type:'log',title:t.title,ctype:t.ctype,genre:t.genre,status:t.status,time:'just now',likes:0,comments:0,
-    _user:{name:(getPD(em)||{}).name||'You',handle:em.split('@')[0],color:'var(--purple)',bg:'var(--surface2)',icon:((getPD(em)||{}).name||'Y')[0]?.toUpperCase()},
-    _uid:'l'+i,_ts:Date.now()-i*60000
-  }));
-  const seeded=SEED_POSTS.map((p,i)=>{
-    const u=DEMO_USERS[p.user];return{...p,_user:u,_uid:'s'+i};
-  });
-  const allCards=[...userPosts,...userLogs,...seeded];
-  const likes=getLikes();
-  feed.innerHTML=allCards.map((c,idx)=>buildCard(c,idx,likes)).join('');
-}
 
-function buildCard(c,idx,likes){
-  const u=c._user;
-  const uid=c._uid||('c'+idx);
-  const liked=likes[uid];
-  const likeCount=(c.likes||0)+(liked?1:0);
-  const avatarStyle=`background:${u.bg||'var(--surface2)'};color:${u.color};border-color:${u.color}22;`;
-  const avatar=`<div class="acard-avatar" style="${avatarStyle}">${u.icon}</div>`;
-  const typeLabel=c.type==='log'?'Logged':c.type==='review'?'Review':c.postType||'Post';
-  const typeCls=c.type==='log'?'atb-log':c.type==='review'?'atb-review':'atb-post';
-  const lineCls=c.type==='log'?'atl-log':c.type==='review'?'atl-review':'atl-post';
-  const timeStr=c._ts?timeAgo(c._ts):(c.time||'');
-
-  let body='';
-  if(c.type==='log'){
-    const icon=CTYPE_ICON[c.ctype]||'🎬';
-    const stCls={'done':'als-done','watching':'als-watching','want':'als-want'}[c.status]||'als-done';
-    const stLabel={'done':'✅ Completed','watching':'▶ Watching','want':'🔖 Want to Watch'}[c.status]||'Logged';
-    const genreLabel=GL[c.genre]||c.genre||'';
-    body=`<div class="acard-log-body">
-      <div class="acard-log-icon">${icon}</div>
-      <div class="acard-log-info">
-        <div class="acard-log-title">${c.title}</div>
-        <div class="acard-log-meta">${genreLabel}${genreLabel?' · ':''}${c.ctype==='movie'?'Movie':c.ctype==='show'?'Show':'Game'}</div>
-        <div class="acard-log-status ${stCls}">${stLabel}</div>
-      </div></div>`;
-  } else if(c.type==='review'){
-    const stars='★'.repeat(c.stars||5)+'☆'.repeat(5-(c.stars||5));
-    body=`<div class="acard-review-body">
-      <div class="acard-review-title">${c.title||''}</div>
-      <div class="acard-stars">${[...stars].map((s,i)=>`<span class="acard-star" style="color:${i<(c.stars||5)?'var(--gold)':'var(--border2)'}">${'★'}</span>`).join('')}</div>
-      <div class="acard-review-text">"${c.text}"</div></div>`;
-  } else {
-    body=`<div class="acard-post-body">
-      <div class="acard-post-text">${c.text}</div>
-      ${c.postType?`<span class="acard-post-tag">#${c.postType.replace(' ','')}</span>`:''}
-    </div>`;
-  }
-
-  return `<div class="acard fade-in" style="animation-delay:${Math.min(idx*0.05,0.4)}s">
-    <div class="acard-top-line ${lineCls}"></div>
-    <div class="acard-head">
-      ${avatar}
-      <div class="acard-meta">
-        <div class="acard-name">${u.name}</div>
-        <div class="acard-time">@${u.handle} · ${timeStr}</div>
-      </div>
-      <span class="acard-type-badge ${typeCls}">${typeLabel}</span>
-    </div>
-    ${body}
-    <div class="acard-footer">
-      <button class="acard-reaction${liked?' liked':''}" onclick="toggleLike('${uid}',this)">
-        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        ${likeCount}
-      </button>
-      <button class="acard-reaction" onclick="showToast('Comments coming soon')">
-        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        ${c.comments||0}
-      </button>
-      <div class="acard-divider"></div>
-      <button class="acard-reaction" onclick="showToast('Share coming soon')">
-        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      </button>
-    </div>
-  </div>`;
-}
-
-function toggleLike(uid,btn){
-  const likes=getLikes();
-  const wasLiked=likes[uid];
-  if(wasLiked)delete likes[uid];else likes[uid]=1;
-  saveLikes(likes);
-  btn.classList.toggle('liked',!wasLiked);
-  const svg=btn.querySelector('svg');
-  const countNode=[...btn.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
-  if(countNode){
-    const cur=parseInt(countNode.textContent.trim())||0;
-    countNode.textContent=' '+(wasLiked?cur-1:cur+1)+' ';
-  }
-}
 
 /* Compose */
 let currentPostType='Hot Take';
+let currentComposeStars=5;
 function openCompose(){
   $('compose-backdrop').classList.add('open');
   $('compose-sheet').classList.add('open');
@@ -1236,6 +1220,15 @@ function setPostType(type,btn){
   currentPostType=type;
   document.querySelectorAll('.compose-type-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  const isReview=(type==='Review');
+  $('compose-review-fields').style.display=isReview?'block':'none';
+}
+function setComposeStar(n){
+  currentComposeStars=n;
+  document.querySelectorAll('.compose-star').forEach((s,i)=>{
+    s.classList.toggle('lit',i<n);
+    s.style.color=i<n?'var(--gold)':'var(--border2)';
+  });
 }
 function updateCharCount(){
   const remaining=280-($('compose-text').value.length);
@@ -1248,16 +1241,359 @@ function submitPost(){
   if(!text){showToast('Write something first');return;}
   const em=getSession();
   const posts=getPosts(em);
-  posts.unshift({type:'post',postType:currentPostType,text,likes:0,comments:0,_ts:Date.now()});
+  let newPost;
+  if(currentPostType==='Review'){
+    const title=($('compose-review-title').value||'').trim();
+    newPost={type:'review',title:title||'Untitled',stars:currentComposeStars,text,likes:0,comments:0,_ts:Date.now()};
+  } else {
+    newPost={type:'post',postType:currentPostType,text,likes:0,comments:0,_ts:Date.now()};
+  }
+  posts.unshift(newPost);
   savePosts(em,posts);
   $('compose-text').value='';
+  if($('compose-review-title'))$('compose-review-title').value='';
+  currentComposeStars=5;setComposeStar(5);
   updateCharCount();
   closeCompose();
+  // Insert new card at top of feed without full re-render
+  const prof=getPD(em)||{};
+  const name=prof.name||'You';
+  const card={...newPost,
+    _user:{name,handle:em.split('@')[0],color:'var(--purple)',bg:'var(--surface2)',icon:name[0]?.toUpperCase()||'?'},
+    _uid:'u0',_isOwn:true};
+  // Shift existing u* uids and re-key
   renderArena();
-  showToast('Posted to the Arena 🔥');
+  showToast('Posted to the Arena ⚡');
 }
-/* ─────────── */
+
+/* ═══════════════════════════════════════════════════
+   FEED STORE — single source of truth for feed cards
+═══════════════════════════════════════════════════ */
+const FeedStore={
+  _cards:[],
+  _dom:new Map(),
+  init(cards){this._cards=cards;this._dom=new Map();},
+  prepend(card){this._cards.unshift(card);},
+  remove(uid){this._cards=this._cards.filter(c=>c._uid!==uid);this._dom.delete(uid);},
+  setDom(uid,el){this._dom.set(uid,el);},
+  getDom(uid){return this._dom.get(uid);},
+  getAll(){return this._cards;},
+  getForTab(tab){
+    if(tab==='trending')return[...this._cards].sort((a,b)=>(b.likes||0)-(a.likes||0));
+    return this._cards;
+  }
+};
+
+/* ═══════════════════════════════════════════════════
+   PENDING QUEUE — buffers live incoming cards
+═══════════════════════════════════════════════════ */
+const PendingQueue={
+  _q:[],
+  enqueue(card){this._q.unshift(card);this._sync();},
+  flush(){const c=[...this._q];this._q=[];this._sync();return c;},
+  count(){return this._q.length;},
+  _sync(){
+    const pill=$('pending-pill');if(!pill)return;
+    const n=this._q.length;
+    if(n>0){
+      pill.innerHTML=`<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> ${n} new post${n>1?'s':''} — tap to see`;
+      pill.classList.add('visible');
+    } else {
+      pill.classList.remove('visible');
+    }
+  }
+};
+
+function flushPending(){
+  const cards=PendingQueue.flush();
+  if(!cards.length)return;
+  const feed=$('arena-feed');
+  const likes=getLikes();
+  const em=getSession();
+  cards.forEach(c=>{
+    FeedStore.prepend(c);
+    const el=createCardEl(c,likes,em);
+    el.classList.add('card-new');
+    feed.insertBefore(el,feed.firstChild);
+    FeedStore.setDom(c._uid,el);
+  });
+  feed.closest('.view').scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ═══════════════════════════════════════════════════
+   LIVE ENGINE — drips activity into pending queue
+═══════════════════════════════════════════════════ */
+const LIVE_SEEDS=[
+  {type:'post',postType:'Hot Take',user:0,text:"Dune Part Two is the best sci-fi film in a decade. Change my mind.",likes:0,comments:0},
+  {type:'log',user:1,title:'Breaking Bad',ctype:'show',genre:'action',status:'done',likes:0,comments:0},
+  {type:'review',user:2,title:'Hollow Knight',stars:5,text:"200 hours in and I still find new rooms. Absolute masterpiece.",likes:0,comments:0},
+  {type:'post',postType:'Rec',user:3,text:"If you haven't seen Severance, stop everything and watch it right now.",likes:0,comments:0},
+  {type:'log',user:4,title:'Hades II',ctype:'game',genre:'action',status:'watching',likes:0,comments:0},
+  {type:'review',user:5,title:'Knives Out',stars:4,text:"Sharp writing, perfect cast. Rian Johnson cooked hard.",likes:0,comments:0},
+  {type:'post',postType:'Hot Take',user:1,text:"Alan Wake 2 not winning GOTY was criminal. Nothing came close.",likes:0,comments:0},
+  {type:'log',user:2,title:'The Last of Us',ctype:'show',genre:'horror',status:'done',likes:0,comments:0},
+  {type:'post',postType:'Rec',user:0,text:"Outer Wilds will break you in the best possible way. No spoilers. Just play.",likes:0,comments:0},
+  {type:'review',user:3,title:'God of War Ragnarök',stars:5,text:"Brok's arc alone deserves an award. I cried. Twice.",likes:0,comments:0},
+  {type:'log',user:4,title:'Cyberpunk 2077',ctype:'game',genre:'scifi',status:'done',likes:0,comments:0},
+  {type:'post',postType:'Hot Take',user:5,text:"The Bear S3 finale hit different. Best episode of television this decade.",likes:0,comments:0},
+  {type:'log',user:0,title:'Baldur\'s Gate 3',ctype:'game',genre:'scifi',status:'watching',likes:0,comments:0},
+  {type:'review',user:1,title:'Squid Game',stars:4,text:"Season 1 is a 10. Season 2 is a 7. Still required watching.",likes:0,comments:0},
+  {type:'post',postType:'Rec',user:2,text:"Play Hades II before anything else this year. No notes. Just trust.",likes:0,comments:0},
+  {type:'log',user:3,title:'Peaky Blinders',ctype:'show',genre:'action',status:'done',likes:0,comments:0},
+  {type:'review',user:4,title:'Elden Ring',stars:5,text:"The feeling of stumbling into Caelid at level 10. There is nothing like it.",likes:0,comments:0},
+  {type:'post',postType:'Hot Take',user:5,text:"Interstellar is Nolan's best film and it's not even close. Hans Zimmer is a god.",likes:0,comments:0},
+];
+let _liveIdx=0,_liveTimer=null;
+const LiveEngine={
+  start(){this._schedule();},
+  stop(){clearTimeout(_liveTimer);_liveTimer=null;},
+  _schedule(){
+    const delay=9000+Math.random()*10000;
+    _liveTimer=setTimeout(()=>{
+      const seed=LIVE_SEEDS[_liveIdx%LIVE_SEEDS.length];_liveIdx++;
+      const u=DEMO_USERS[seed.user];
+      PendingQueue.enqueue({...seed,_user:u,_uid:'lv'+Date.now()+_liveIdx,_ts:Date.now()});
+      LiveEngine._schedule();
+    },delay);
+  }
+};
+
+/* Live ticker strip */
+const TICKER_ITEMS=[
+  {icon:'⚡',text:'Arjun just completed Elden Ring'},
+  {icon:'🔥',text:'Interstellar trending in Sci-Fi'},
+  {icon:'★',text:'Priya reviewed Severance · 5 stars'},
+  {icon:'👁',text:'Kiran is watching The Last of Us'},
+  {icon:'🎮',text:'12 people logged Cyberpunk 2077'},
+  {icon:'🎬',text:'Dune topping the charts this week'},
+  {icon:'⚡',text:'Meera just started Breaking Bad'},
+  {icon:'🔥',text:'Hades II trending right now'},
+  {icon:'★',text:'Rahul reviewed The Bear · 5 stars'},
+  {icon:'👁',text:'Sneha completed God of War Ragnarök'},
+  {icon:'🎮',text:'7 new Sci-Fi logs in the last hour'},
+  {icon:'🎬',text:'Knives Out hitting the comedy vault'},
+];
+function initLiveStrip(){
+  const track=$('live-strip-track');if(!track)return;
+  const items=[...TICKER_ITEMS,...TICKER_ITEMS];
+  track.innerHTML=items.map(t=>`<span class="live-tick-item"><span class="live-tick-icon">${t.icon}</span>${t.text}<span class="live-tick-sep"> · </span></span>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════
+   FEED RENDER — DOM-based, no innerHTML rebuilds
+═══════════════════════════════════════════════════ */
+let currentFeedTab='foryou';
+
+function switchFeedTab(tab){
+  currentFeedTab=tab;
+  document.querySelectorAll('.arena-ftab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  renderArena();
+}
+
+function buildAllCards(em){
+  const userPosts=getPosts(em).map((p,i)=>{
+    const prof=getPD(em)||{};
+    const name=prof.name||'You';
+    return{...p,_user:{name,handle:em.split('@')[0],color:'var(--purple)',bg:'var(--surface2)',icon:name[0]?.toUpperCase()||'?'},_uid:'u'+i,_isOwn:true};
+  });
+  const tracked=getAllTracked(em);
+  const prof=getPD(em)||{};const uname=prof.name||'You';
+  const userLogs=tracked.map((t,i)=>({
+    type:'log',title:t.title,ctype:t.ctype,genre:t.genre,status:t.status,likes:0,comments:0,
+    _user:{name:uname,handle:em.split('@')[0],color:'var(--purple)',bg:'var(--surface2)',icon:uname[0]?.toUpperCase()||'Y'},
+    _uid:'l'+i,_ts:Date.now()-i*60000,_isOwn:true
+  }));
+  const seeded=SEED_POSTS.map((p,i)=>({...p,_user:DEMO_USERS[p.user],_uid:'s'+i}));
+  const all=[...userPosts,...userLogs,...seeded];
+  if(currentFeedTab==='trending')return[...all].sort((a,b)=>(b.likes||0)-(a.likes||0));
+  return all;
+}
+
+function renderArena(){
+  const em=getSession();
+  const feed=$('arena-feed');
+  if(!feed)return;
+  const allCards=buildAllCards(em);
+  FeedStore.init(allCards);
+  const likes=getLikes();
+  feed.innerHTML='';
+  allCards.forEach((c,idx)=>{
+    const el=createCardEl(c,likes,em);
+    el.style.animationDelay=Math.min(idx*.045,.3)+'s';
+    feed.appendChild(el);
+    FeedStore.setDom(c._uid,el);
+  });
+}
+
+function createCardEl(c,likes,em){
+  const div=document.createElement('div');
+  div.className='acard fade-in';
+  div.dataset.uid=c._uid;
+  div.innerHTML=buildCardHTML(c,likes,em);
+  return div;
+}
+
+function buildCardHTML(c,likes,em){
+  const u=c._user;
+  const uid=c._uid;
+  const liked=!!likes[uid];
+  const likeCount=(c.likes||0)+(liked?1:0);
+  const avatarStyle=`background:${u.bg||'var(--surface2)'};color:${u.color};border-color:${u.color}22;`;
+  const avatar=`<div class="acard-avatar" style="${avatarStyle}">${u.icon}</div>`;
+  const typeLabel=c.type==='log'?'Logged':c.type==='review'?'Review':(c.postType||'Post');
+  const typeCls=c.type==='log'?'atb-log':c.type==='review'?'atb-review':'atb-post';
+  const lineCls=c.type==='log'?'atl-log':c.type==='review'?'atl-review':'atl-post';
+  const timeStr=c._ts?timeAgo(c._ts):(c.time||'');
+  let body='';
+  if(c.type==='log'){
+    const ctypeLabel={movie:'Movie',show:'Show',game:'Game'}[c.ctype]||'Media';
+    const icon=`<span style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--border2)">${ctypeLabel[0]}</span>`;
+    const stCls={done:'als-done',watching:'als-watching',want:'als-want'}[c.status]||'als-done';
+    const stLabel={done:'Completed',watching:'Watching',want:'Want to Watch'}[c.status]||'Logged';
+    const genreLabel=GL[c.genre]||c.genre||'';
+    body=`<div class="acard-log-body">
+      <div class="acard-log-icon">${icon}</div>
+      <div class="acard-log-info">
+        <div class="acard-log-title">${c.title}</div>
+        <div class="acard-log-meta">${genreLabel}${genreLabel?' · ':''}${ctypeLabel}</div>
+        <div class="acard-log-status ${stCls}">${stLabel}</div>
+      </div></div>`;
+  } else if(c.type==='review'){
+    const stars=c.stars||5;
+    const starHTML=Array.from({length:5},(_,i)=>`<span class="acard-star" style="color:${i<stars?'var(--gold)':'var(--border2)'}">★</span>`).join('');
+    body=`<div class="acard-review-body">
+      <div class="acard-review-title">${c.title||''}</div>
+      <div class="acard-stars">${starHTML}</div>
+      <div class="acard-review-text">"${c.text}"</div></div>`;
+  } else {
+    body=`<div class="acard-post-body">
+      <div class="acard-post-text">${c.text}</div>
+      ${c.postType?`<span class="acard-post-tag">#${c.postType.replace(' ','')}</span>`:''}
+    </div>`;
+  }
+  const deleteBtn=c._isOwn?`<button class="acard-reaction acard-delete" onclick="deleteOwnPost('${uid}',this)" title="Delete post"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>`:'';
+  return`<div class="acard-top-line ${lineCls}"></div>
+    <div class="acard-head">
+      ${avatar}
+      <div class="acard-meta">
+        <div class="acard-name">${u.name}</div>
+        <div class="acard-time">@${u.handle} · ${timeStr}</div>
+      </div>
+      <span class="acard-type-badge ${typeCls}">${typeLabel}</span>
+    </div>
+    ${body}
+    <div class="acard-footer">
+      <button class="acard-reaction like-btn${liked?' liked':''}" onclick="toggleLike('${uid}',this)">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="like-count">${likeCount}</span>
+      </button>
+      <button class="acard-reaction" onclick="showToast('Comments coming soon')">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        ${c.comments||0}
+      </button>
+      <div class="acard-divider"></div>
+      <button class="acard-reaction" onclick="showToast('Share coming soon')">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      ${deleteBtn}
+    </div>`;
+}
+
+function toggleLike(uid,btn){
+  const likes=getLikes();
+  const wasLiked=!!likes[uid];
+  if(wasLiked)delete likes[uid];else likes[uid]=1;
+  saveLikes(likes);
+  // In-place update — no re-render!
+  btn.classList.toggle('liked',!wasLiked);
+  const countEl=btn.querySelector('.like-count');
+  if(countEl){const cur=parseInt(countEl.textContent)||0;countEl.textContent=wasLiked?cur-1:cur+1;}
+}
+
+function deleteOwnPost(uid,btn){
+  const el=btn.closest('.acard');
+  if(!el)return;
+  el.classList.add('card-removing');
+  setTimeout(()=>{
+    el.remove();
+    FeedStore.remove(uid);
+    const em=getSession();
+    const posts=getPosts(em);
+    const idx=parseInt(uid.replace('u',''));
+    if(!isNaN(idx)&&idx>=0&&idx<posts.length){posts.splice(idx,1);savePosts(em,posts);}
+  },290);
+  showToast('Post deleted');
+}
+let toastTimer;
 function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
+/* ═══════════════════════════════════════════════════
+   POSTER SYSTEM — Wikipedia REST API, no key needed
+═══════════════════════════════════════════════════ */
+const WIKI_SLUGS={
+  // Movies
+  1:'Interstellar_(film)',2:'Dune_(2021_film)',3:'The_Dark_Knight',
+  4:'Dhurandhar_(2024_film)',5:'Get_Out',6:'Inception',7:'The_Conjuring',
+  8:'Mad_Max:_Fury_Road',9:'Superbad',10:'Everything_Everywhere_All_at_Once',
+  11:'The_Menu_(2022_film)',12:'Knives_Out',
+  // Shows
+  101:'Breaking_Bad',102:'Stranger_Things',103:'The_Last_of_Us_(TV_series)',
+  104:'Severance_(TV_series)',105:'House_of_the_Dragon',106:'The_Bear_(TV_series)',
+  107:'Squid_Game',108:'Wednesday_(TV_series)',109:'Abbott_Elementary',
+  110:'Black_Mirror',111:'Peaky_Blinders',112:'What_We_Do_in_the_Shadows_(TV_series)',
+  // Games
+  201:'Elden_Ring',202:'Cyberpunk_2077',203:'Resident_Evil_4_(2023_video_game)',
+  204:'God_of_War_Ragnar%C3%B6k',205:'Hades_II',206:"Baldur%27s_Gate_3",
+  207:'Alan_Wake_2',208:'Stardew_Valley',209:'Hollow_Knight',
+  210:'Outer_Wilds',211:'Phasmophobia_(video_game)',212:'It_Takes_Two_(video_game)'
+};
+const POSTER_CACHE={};
+
+async function fetchPosterForItem(id){
+  const slug=WIKI_SLUGS[id];
+  if(!slug||POSTER_CACHE[id])return;
+  try{
+    const r=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`);
+    if(!r.ok)return;
+    const d=await r.json();
+    if(d.thumbnail&&d.thumbnail.source){
+      // Upscale to wider image
+      const src=d.thumbnail.source.replace(/\/\d+px-/,'/400px-');
+      POSTER_CACHE[id]=src;
+      updateTilePoster(id,src);
+    }
+  }catch(e){}
+}
+
+async function fetchAllPosters(){
+  const ids=[...CONTENT.movie,...CONTENT.show,...CONTENT.game].map(m=>m.id);
+  // Stagger in small batches to be gentle on Wikipedia
+  for(let i=0;i<ids.length;i+=6){
+    const batch=ids.slice(i,i+6);
+    await Promise.allSettled(batch.map(id=>fetchPosterForItem(id)));
+  }
+}
+
+function updateTilePoster(id,src){
+  const tile=document.querySelector(`.movie-tile[data-id="${id}"]`);
+  if(!tile)return;
+  const poster=tile.querySelector('.tile-poster');
+  if(!poster)return;
+  let img=poster.querySelector('.tile-real-poster');
+  if(!img){
+    img=document.createElement('img');
+    img.className='tile-real-poster';
+    img.alt='';
+    poster.insertBefore(img,poster.children[1]||null);
+  }
+  img.onload=()=>{img.classList.add('loaded');poster.classList.add('has-poster');};
+  img.onerror=()=>{img.remove();};
+  img.src=src;
+}
+
+function applyCachedPosters(){
+  Object.keys(POSTER_CACHE).forEach(id=>updateTilePoster(Number(id),POSTER_CACHE[id]));
+}
+
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter')return;
   if(document.activeElement===$('login-password'))handleLogin();
