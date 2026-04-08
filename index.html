@@ -444,7 +444,6 @@
 <body>
 <div class="scanline"></div>
 
-<!-- AUTH -->
 <div id="auth-screen" class="screen">
   <div class="logo"><span class="hype">hype</span><span class="X">X</span></div>
   <div class="auth-badge">For Gamers &amp; Movie Lovers</div>
@@ -467,7 +466,6 @@
   </div>
 </div>
 
-<!-- APP -->
 <div id="app-screen" class="screen hidden">
   <div class="app-header">
     <div class="app-header-logo"><span class="hype">hype</span><span class="X">X</span></div>
@@ -479,7 +477,6 @@
     </div>
   </div>
 
-  <!-- ARENA -->
   <div class="view active" id="feed-view">
     <div class="arena-header">
       <div class="arena-header-left">
@@ -500,7 +497,6 @@
     <div class="arena-feed" id="arena-feed"></div>
   </div>
 
-  <!-- EXPLORE -->
   <div class="view" id="explore-view">
     <div class="exp-sticky">
       <div class="exp-search-wrap">
@@ -523,10 +519,8 @@
     <div class="movie-grid" id="movie-grid"></div>
   </div>
 
-  <!-- PROFILE -->
   <div class="view" id="profile-view">
 
-    <!-- Topbar: hamburger | Profile | edit pencil -->
     <div class="pv-topbar">
       <button class="pv-icon-btn" onclick="openMenuSheet()" aria-label="Menu">
         <div class="ham-line"></div>
@@ -573,7 +567,6 @@
       <div class="stat"><div class="stat-num" id="stat-dom-pct">0%</div><div class="stat-label">Dominant</div></div>
     </div>
 
-    <!-- Instagram-style icon tab bar -->
     <div class="profile-tab-bar">
       <div class="ptab active" id="ptab-0" onclick="switchProfileTab(0)">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -589,11 +582,9 @@
       </div>
     </div>
 
-    <!-- Swipeable panels -->
     <div class="profile-panels-wrap" id="profile-panels-wrap">
       <div class="profile-panels" id="profile-panels">
 
-        <!-- Vault -->
         <div class="profile-panel" id="panel-vault">
           <div class="vault-grid" id="watched-grid"></div>
           <div class="empty-vault" id="empty-watched">
@@ -602,7 +593,6 @@
           </div>
         </div>
 
-        <!-- DNA -->
         <div class="profile-panel" id="panel-dna">
           <div class="dna-body">
             <div class="dna-row">
@@ -624,7 +614,6 @@
           </div>
         </div>
 
-        <!-- Critiques -->
         <div class="profile-panel" id="panel-critiques">
           <div class="critiques-body">
             <div class="critiques-icon" style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;color:var(--purple2)">CRITIQUES</div>
@@ -636,10 +625,7 @@
       </div>
     </div>
 
-  </div><!-- /profile-view -->
-
-  <!-- Bottom Nav -->
-  <div class="bottom-nav">
+  </div><div class="bottom-nav">
     <button class="nav-btn active" id="nav-feed" onclick="switchView('feed')">
       <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       <span>Arena</span>
@@ -659,7 +645,6 @@
   </div>
 </div>
 
-<!-- EDIT SHEET -->
 <div class="sheet-backdrop" id="edit-backdrop" onclick="closeEditModal()"></div>
 <div class="edit-sheet" id="edit-sheet">
   <div class="sheet-handle"></div>
@@ -678,7 +663,6 @@
   <div class="edit-field-row"><label>Bio</label><input type="text" id="edit-bio" placeholder="Gamer / Cinephile / etc."/></div>
 </div>
 
-<!-- MENU SHEET -->
 <div class="sheet-backdrop" id="menu-backdrop" onclick="closeMenuSheet()"></div>
 <div class="menu-sheet" id="menu-sheet">
   <div class="sheet-handle"></div>
@@ -700,7 +684,6 @@
   </div>
 </div>
 
-<!-- LOG STATUS SHEET -->
 <div class="sheet-backdrop" id="log-backdrop" onclick="closeLogSheet()"></div>
 <div class="log-sheet" id="log-sheet">
   <div class="sheet-handle"></div>
@@ -730,7 +713,6 @@
   <button class="log-sheet-remove" id="log-sheet-remove" style="display:none" onclick="confirmRemove()">Remove from tracking</button>
 </div>
 
-<!-- COMPOSE SHEET -->
 <div class="sheet-backdrop" id="compose-backdrop" onclick="closeCompose()"></div>
 <div class="compose-sheet" id="compose-sheet">
   <div class="sheet-handle"></div>
@@ -1022,8 +1004,10 @@ function setContentType(type,btn){
   activeContentType=type;
   document.querySelectorAll('.ctype-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  MOVIES=CONTENT[type];
-  filterMovies();
+  
+  // Re-run the search filter so the grid updates immediately 
+  // with either the local default or a new Wikipedia search
+  filterMovies(); 
 }
 
 function getAllTracked(em){
@@ -1079,13 +1063,79 @@ function renderMovieGrid(movies){
   // Apply any already-fetched posters immediately
   requestAnimationFrame(applyCachedPosters);
 }
-function filterMovies(){
-  const q=$('exp-search').value.toLowerCase();
-  let r=CONTENT[activeContentType];
-  if(activeGF!=='all')r=r.filter(m=>m.genre===activeGF);
-  if(q)r=r.filter(m=>m.title.toLowerCase().includes(q)||String(m.year).includes(q)||GL[m.genre].toLowerCase().includes(q));
-  renderMovieGrid(r);
+
+// ----------------------------------------------------
+// DYNAMIC WIKIPEDIA SEARCH INTEGRATION
+// ----------------------------------------------------
+let searchTimeout = null;
+
+async function filterMovies() {
+  const q = $('exp-search').value.trim().toLowerCase();
+  const grid = $('movie-grid');
+
+  // If the search bar is empty, fall back to your default local content
+  if (!q) {
+    let r = CONTENT[activeContentType];
+    if (activeGF !== 'all') r = r.filter(m => m.genre === activeGF);
+    MOVIES = r; // Sync the active array
+    renderMovieGrid(r);
+    return;
+  }
+
+  // Show a clean loading state while fetching
+  grid.innerHTML = '<div class="no-results-msg">Searching Wikipedia...</div>';
+
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(async () => {
+    try {
+      // Add context to the search query so Wikipedia knows what we're looking for
+      let searchContext = 'film';
+      if (activeContentType === 'show') searchContext = 'TV series';
+      if (activeContentType === 'game') searchContext = 'video game';
+
+      const searchQuery = `${q} ${searchContext}`;
+
+      // Hit the Wikipedia Action API for search results + thumbnails
+      const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrlimit=12&prop=pageimages|extracts&piprop=thumbnail&pithumbsize=400&exchars=150&exintro=1&explaintext=1&origin=*&format=json`);
+      
+      const data = await res.json();
+      
+      if (!data.query || !data.query.pages) {
+        grid.innerHTML = '<div class="no-results-msg">No titles found on Wikipedia</div>';
+        return;
+      }
+
+      const pages = Object.values(data.query.pages);
+      
+      // Map Wikipedia's data structure to your hypeX UI structure
+      const dynamicMovies = pages.map(page => {
+        // Attempt to extract a release year from the Wikipedia snippet
+        const yearMatch = page.extract ? page.extract.match(/\b(19|20)\d{2}\b/) : null;
+        const year = yearMatch ? parseInt(yearMatch[0]) : "N/A";
+        
+        // Feed the poster directly into your existing cache system
+        if (page.thumbnail && page.thumbnail.source) {
+          POSTER_CACHE[page.pageid] = page.thumbnail.source;
+        }
+
+        return {
+          id: page.pageid, // Use Wiki's page ID as the unique key
+          title: page.title.replace(/ \((.*?)\)/, ''), // Clean up "(2014 film)" from titles
+          year: year,
+          genre: activeGF !== 'all' ? activeGF : 'action', // Fallback to 'action' styling if 'all' is selected
+          ctype: activeContentType
+        };
+      });
+
+      // Update the global MOVIES array so your openLogSheet() function still finds the right object
+      MOVIES = dynamicMovies;
+      renderMovieGrid(dynamicMovies);
+    } catch (err) {
+      grid.innerHTML = '<div class="no-results-msg">Network error connecting to Wikipedia</div>';
+    }
+  }, 400); // 400ms delay to wait for the user to finish typing
 }
+
 function setGenreFilter(g,btn){
   activeGF=g;
   document.querySelectorAll('.exp-gtab').forEach(b=>b.classList.remove('active'));
